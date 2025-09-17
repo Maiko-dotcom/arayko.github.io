@@ -1,1 +1,62 @@
-# arayko.github.io
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ARE YOU A HUMAN?</title>
+<style>
+  :root{--bg:#041007;--green:#00ff7f;--accent:#ffd700;--glass: rgba(255,255,255,0.06);}
+  html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,Arial;background:var(--bg);color:var(--green);overflow:hidden}
+  .full{position:relative;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:20px}
+  canvas#rain{position:absolute;inset:0;display:block;z-index:0;mix-blend-mode:screen;opacity:.85}
+  .panel{position:relative;z-index:2;width:min(920px,96%);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:28px;box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);backdrop-filter: blur(6px) saturate(120%);border: 1px solid rgba(0,255,127,0.08);}
+  h1{margin:0;font-size: clamp(18px,3.2vw,34px);letter-spacing:1px}
+  p.lead{margin:10px 0 18px;color:rgba(0,255,127,0.9);font-weight:600}
+  .meter{width:100%;height:12px;background:rgba(255,255,255,0.03);border-radius:8px;overflow:hidden;margin:14px 0 18px;box-shadow:inset 0 2px 6px rgba(0,0,0,0.6)}
+  .meter > i{display:block;height:100%;background:linear-gradient(90deg,var(--green),#00b386);width:0%;transition:width 0.6s cubic-bezier(.2,.9,.2,1)}
+  .count{font-weight:700;font-size:28px;color:var(--accent);margin-bottom:6px}
+  .glitch{font-family:"Courier New",monospace;font-size:clamp(20px,2.8vw,36px);position:relative;letter-spacing:2px;color:var(--green);text-transform:uppercase;margin-bottom:6px}
+  .glitch::before,.glitch::after{content:attr(data-text);position:absolute;left:0;top:0;clip:rect(0,900px,0,0)}
+  .glitch::before{animation:glitchTop 2.8s infinite;color:#00ffd5;mix-blend-mode:screen}
+  .glitch::after{animation:glitchBot 3.2s infinite;color:#00a6ff;mix-blend-mode:screen}
+  @keyframes glitchTop{0%{clip:rect(0,900px,0,0);transform:translate(0,0)}10%{clip:rect(0,900px,34px,0);transform:translate(-2px,-2px)}20%{clip:rect(0,900px,0,0);transform:translate(0,0)}30%{clip:rect(0,900px,46px,0);transform:translate(-4px,2px)}100%{clip:rect(0,900px,0,0);transform:translate(0,0)}}
+  @keyframes glitchBot{0%{clip:rect(0,900px,0,0);transform:translate(0,0)}12%{clip:rect(40px,900px,90px,0);transform:translate(3px,1px)}25%{clip:rect(0,900px,0,0);transform:translate(0,0)}45%{clip:rect(22px,900px,74px,0);transform:translate(-3px,-1px)}100%{clip:rect(0,900px,0,0);transform:translate(0,0)}}
+  .confetti{position:absolute;inset:0;z-index:3;pointer-events:none}
+  small{display:block;color:rgba(0,255,127,0.28);margin-top:12px;font-size:13px}
+</style>
+</head>
+<body>
+<canvas id="rain"></canvas>
+
+<div class="full">
+  <div class="panel" id="panel">
+    <div class="glitch" data-text="TOL!!">SYSTEM ERROR DAW TOL</div>
+    <p class="lead">LOOK AT YOU0_0.</p>
+    <div class="count" id="count">Wait kalang: 00:10</div>
+    <div class="meter"><i id="bar"></i></div>
+    <div style="color:rgba(0,255,127,0.6);font-size:14px">Status: <span id="status">Establishing secure sandbox...</span></div>
+  </div>
+</div>
+
+<div class="confetti" id="confetti"></div>
+
+<script>
+/* Matrix rain background */
+const canvas=document.getElementById('rain');const ctx=canvas.getContext('2d');let cols,rows,size=16,drops=[];
+function setupCanvas(){canvas.width=innerWidth;canvas.height=innerHeight;cols=Math.floor(canvas.width/size);rows=Math.floor(canvas.height/size);drops=new Array(cols).fill(1);}
+window.addEventListener('resize',setupCanvas);setupCanvas();
+function drawRain(){ctx.fillStyle='rgba(4,16,7,0.25)';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.font=size+'px monospace';for(let i=0;i<drops.length;i++){const text=String.fromCharCode(0x30A0+Math.random()*96);ctx.fillStyle=i%6===0?'rgba(0,255,127,0.95)':'rgba(0,255,127,0.25)';ctx.fillText(text,i*size,drops[i]*size);if(drops[i]*size>canvas.height&&Math.random()>0.975)drops[i]=0;drops[i]++;}requestAnimationFrame(drawRain);}
+requestAnimationFrame(drawRain);
+
+/* Countdown */
+let duration=10,left=duration;const bar=document.getElementById('bar');const count=document.getElementById('count');const status=document.getElementById('status');
+function tick(){left=Math.max(0,left-1);const pct=Math.round(((duration-left)/duration)*100);bar.style.width=pct+'%';count.textContent='Countdown: 00:'+String(left).padStart(2,'0');if(left===7)status.textContent='MUWHEHEHEHEHE';if(left===4)status.textContent='anistisia TOL';if(left===1)status.textContent='Finalizing payload :3';if(left===0){revealPrank();return;}setTimeout(tick,1000);}
+setTimeout(tick,1000);
+
+/* Prank reveal */
+function revealPrank(){status.textContent='Payload delivered.';createConfetti(120);showMessage("🎉 Click the button nigg 🎉");}
+function showMessage(msg){const panel=document.getElementById('panel');panel.innerHTML=`<h1 style="color:${getComputedStyle(document.documentElement).getPropertyValue('--accent')}">${msg}</h1><p style="color:rgba(255,255,255,0.9);margin-top:10px">DANGIT</p><a class="btn" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noreferrer" style="display:inline-block;margin-top:10px;padding:10px 16px;border:1px solid rgba(0,255,127,0.2);border-radius:8px;color:#00ff7f;text-decoration:none">CURIOUS KA? CLICK MO</a><small style="display:block;margin-top:12px;color:rgba(255,255,255,0.2)">Bat nya ginawa sakin yun tol? :<.</small>`;}
+function createConfetti(count){const container=document.getElementById('confetti');for(let i=0;i<count;i++){const el=document.createElement('div');el.style.position='absolute';el.style.left=Math.random()*100+'%';el.style.top='-10%';el.style.width=(6+Math.random()*10)+'px';el.style.height=(10+Math.random()*18)+'px';el.style.background=['#FFD700','#FF69B4','#00FF7F','#00BFFF','#FF8C00'][Math.floor(Math.random()*5)];el.style.opacity=Math.random()*0.9+0.2;el.style.borderRadius='2px';el.style.transform='rotate('+Math.random()*360+'deg)';el.style.transition='transform 2.8s linear, top 2.8s linear';container.appendChild(el);setTimeout(()=>{el.style.top=(70+Math.random()*40)+'%';el.style.transform='rotate('+(Math.random()*720)+'deg)';},50+Math.random()*400);setTimeout(()=>el.remove(),4000+Math.random()*1000);}}
+</script>
+</body>
+</html>
